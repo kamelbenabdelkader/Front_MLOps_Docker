@@ -23,6 +23,7 @@ url = "https://botaniapp.azurewebsites.net/"
 response = requests.get(url)
 # flights = response.json()
 url1 = "https://botaniapp.azurewebsites.net/predict"
+url2 = "https://botaniapp.azurewebsites.net/insert"
 
 
 
@@ -65,9 +66,20 @@ def add_page():
                 st.success("Les informations de votre fleur ont été ajouté avec succès !")
                 st.write(f"La fleure est : {response.json()['prediction']}.")
                 st.write(f"Avec une probabilité d'exactitude de : {response.json()['probability']}.")
-
+                data = ({"prediction" : response.json()['prediction'],"probability" : response.json()['probability']},)
+                response_insert = requests.post(url2, json=data)
+                if response_insert.ok:
+                    st.success("Données insérées avec succès")
         else:
                 st.error("Erreur lors de l'ajout des informations de votre fleur.")
+
+
+
+data = {
+    "prediction" : response.json()['prediction'],
+    "probability" : response.json()['probability']
+}
+response = requests.post(url2, json=data)
 
 # Fonction pour la page "Métriques"
 def metrics_page():
